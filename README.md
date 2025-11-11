@@ -1,4 +1,4 @@
-# Cooperative System Database Schema  
+# Cooperative Management System Database Schema  
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white)
 
 A **comprehensive relational database schema** for managing cooperative societies (savings & credit unions). Supports member management, contributions, shares, loans, dividends, meetings, accounting, and audit trails.
