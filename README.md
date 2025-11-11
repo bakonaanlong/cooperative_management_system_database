@@ -11,9 +11,7 @@ A **comprehensive relational database schema** for managing cooperative societie
 - [Tables](#tables)
 - [Key Features](#key-features)
 - [Setup & Migration](#setup--migration)
-- [Security & Best Practices](#security--best-practices)
-- [Contributing](#contributing)
-- [License](#license)
+
 
 ---
 
@@ -119,20 +117,14 @@ erDiagram
 
 ## Setup & Migration
 
-### 1. Create Database
+### Create Database
 ```sql
-CREATE DATABASE Cooperative_System CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE Cooperative_System;
 USE Cooperative_System;
 ```
 
-### 2. Run Schema
-Save the full `CREATE TABLE` script as `schema.sql`:
 
-```bash
-mysql -u root -p Cooperative_System < schema.sql
-```
-
-### 3. Recommended Indexes (Add to `indexes.sql`)
+### Recommended Indexes (Add to `indexes.sql`)
 ```sql
 -- Performance boosts
 CREATE INDEX idx_members_coop ON members(coop_id);
@@ -144,113 +136,20 @@ CREATE INDEX idx_audit_timestamp ON audit_log(timestamp DESC);
 
 ---
 
-## Security & Best Practices
-
-| Practice | Recommendation |
-|--------|----------------|
-| **Passwords** | Store only `password_hash` (use `bcrypt`) |
-| **Input Validation** | Enforce at app level (e.g., phone regex, email) |
-| **Soft Deletes** | Not used — prefer `status` fields |
-| **Backups** | Daily dumps + transaction logs |
-| **Encryption** | Encrypt `id_num`, store `photo_url` on secure CDN |
-| **Rate Limits** | On login & sensitive actions |
-| **Triggers** | Use for auto-journaling on transactions |
-
----
-
-## Sample Queries
-
-### Get Member Dashboard
-```sql
-SELECT 
-    m.member_no, m.first_name, m.last_name,
-    COALESCE(SUM(c.amount), 0) as total_contributions,
-    COALESCE(SUM(ms.units * st.unit_price), 0) as share_value,
-    COUNT(l.id) FILTER (WHERE l.status = 'active') as active_loans
-FROM members m
-LEFT JOIN contributions c ON m.id = c.member_id
-LEFT JOIN member_shares ms ON m.id = ms.member_id
-LEFT JOIN share_types st ON ms.share_type_id = st.id
-LEFT JOIN loans l ON m.id = l.member_id
-WHERE m.coop_id = 1 AND m.id = 42
-GROUP BY m.id;
-```
-
----
-
-## API Integration Tips
-
-| Endpoint | Table(s) |
-|--------|---------|
-| `GET /members` | `members`, `member_next_of_kin` |
-| `POST /contributions` | `contributions`, `transactions` |
-| `POST /loans/apply` | `loans`, `guarantors` |
-| `GET /reports/dividends` | `dividends`, `dividend_distributions` |
-
----
-
-## Contributing
-
-1. Fork the repo
-2. Create feature branch: `git checkout -b feature/loan-approval-workflow`
-3. Add tests or sample data
-4. Update docs
-5. Submit PR
-
-> See `CONTRIBUTING.md` for details.
-
----
-
-## License
-
-[MIT License](LICENSE) – Free to use, modify, and distribute.
-
----
-
-## 📞 Support
+## Support
 
 - **Issues**: [github.com/yourusername/cooperative-system-db/issues](https://github.com)
-- **Discussions**: Enabled for Q&A and feature requests
 
 ---
 
-**Built with ❤️ for cooperative societies in Nigeria and beyond.**
-
----
-
-## Folder Structure (Recommended)
+## Folder Structure
 
 ```
 cooperative-system-db/
 ├── README.md
-├── LICENSE
-├── schema.sql
-├── indexes.sql
-├── sample-data/
-│   └── insert_sample_coop.sql
-├── docs/
-│   ├── er-diagram.mmd
-│   └── data-dictionary.md
-├── triggers/
-│   └── auto_journal_contribution.sql
-└── tests/
-    └── test_loan_repayment.sql
+├── cooperative_system_database.sql
+├── cooperative_system_indexes.sql
+├── entity_relation_diagram.jpg
 ```
 
 ---
-
-### Next Steps:
-1. Create the GitHub repo
-2. Push this `README.md` + `schema.sql`
-3. Add Mermaid diagram
-4. Generate data dictionary (optional)
-
-Let me know if you want:
-- Auto-generated **Data Dictionary**
-- **SQLAlchemy / Laravel Migration** versions
-- **Sample Data Insert Scripts**
-- **Dockerized MySQL Setup**
-
---- 
-
-**You're ready to go live on GitHub!** 🚀
